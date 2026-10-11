@@ -183,3 +183,4 @@ npm run fetch
 cd ../backend
 python seed.py --force   # recrea la base desde cero (borra usuarios y pedidos)
 ```
+   Demo: https://click-and-buy-vw1y.onrender.com
