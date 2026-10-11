@@ -196,7 +196,7 @@ export function renderCartDrawer() {
     </div>`;
 }
 
-export function initCartDrawer() {
+export function initCartDrawer(root) {
     const overlay = document.getElementById("cart-overlay");
     const toggleBtn = document.getElementById("cart-toggle-btn");
     const closeBtn = document.getElementById("cart-close-btn");
@@ -230,7 +230,7 @@ export function initCartDrawer() {
         });
     }
 
-    document.querySelectorAll("[data-qty-change]").forEach((btn) => {
+    root.querySelectorAll("[data-qty-change]").forEach((btn) => {
         btn.addEventListener("click", () => {
             const productId = btn.dataset.qtyChange;
             const size = btn.dataset.size;
@@ -239,7 +239,7 @@ export function initCartDrawer() {
         });
     });
 
-    document.querySelectorAll("[data-remove-item]").forEach((btn) => {
+    root.querySelectorAll("[data-remove-item]").forEach((btn) => {
         btn.addEventListener("click", () => {
             const productId = btn.dataset.removeItem;
             const size = btn.dataset.size;

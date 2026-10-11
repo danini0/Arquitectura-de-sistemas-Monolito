@@ -1,7 +1,7 @@
 import "./style.css";
 // v1.1 - Auth & Account update
 import { route, startRouter, navigate } from "./router.js";
-import { renderNavbar, initNavbar } from "./components/navbar.js";
+import { renderNavbar, initNavbar, bindNavbarGlobalListeners } from "./components/navbar.js";
 import { renderFooter } from "./components/footer.js";
 import { renderCartDrawer, initCartDrawer } from "./components/cart.js";
 import { renderHome } from "./pages/home.js";
@@ -18,19 +18,18 @@ export const store = {
     user: null,
 };
 
+// Re-renderiza solo el navbar y el drawer del carrito. Nunca toca el <main>,
+// así la página actual conserva su DOM, sus listeners y sus timers.
 export function refreshApp() {
-    const app = document.getElementById("app");
-    const mainContent = document.querySelector("main")?.innerHTML || "";
+    const navbarRoot = document.getElementById("navbar-root");
+    const cartRoot = document.getElementById("cart-root");
+    if (!navbarRoot || !cartRoot) return;
 
-    app.innerHTML = `
-        ${renderNavbar()}
-        <main>${mainContent}</main>
-        ${renderCartDrawer()}
-        ${renderFooter()}
-    `;
+    navbarRoot.innerHTML = renderNavbar();
+    cartRoot.innerHTML = renderCartDrawer();
 
-    initNavbar();
-    initCartDrawer();
+    initNavbar(navbarRoot);
+    initCartDrawer(cartRoot);
 
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) {
@@ -43,13 +42,6 @@ export function refreshApp() {
             navigate("/");
         });
     }
-
-    document.querySelectorAll("footer [data-link]").forEach((link) => {
-        link.addEventListener("click", (e) => {
-            e.preventDefault();
-            navigate(link.dataset.link);
-        });
-    });
 }
 
 async function init() {
@@ -69,26 +61,11 @@ async function init() {
 
     const app = document.getElementById("app");
     app.innerHTML = `
-        ${renderNavbar()}
+        <div id="navbar-root"></div>
         <main></main>
-        ${renderCartDrawer()}
+        <div id="cart-root"></div>
         ${renderFooter()}
     `;
-
-    initNavbar();
-    initCartDrawer();
-
-    const logoutBtn = document.getElementById("logout-btn");
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", async () => {
-            try {
-                await api.logout();
-            } catch {}
-            store.user = null;
-            refreshApp();
-            navigate("/");
-        });
-    }
 
     document.querySelectorAll("footer [data-link]").forEach((link) => {
         link.addEventListener("click", (e) => {
@@ -96,6 +73,9 @@ async function init() {
             navigate(link.dataset.link);
         });
     });
+
+    bindNavbarGlobalListeners();
+    refreshApp();
 
     startRouter();
 }

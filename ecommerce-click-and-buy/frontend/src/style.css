@@ -123,6 +123,13 @@ body {
     min-height: 100vh;
 }
 
+/* Contenedores fijos del navbar y del drawer: no generan caja propia,
+   así el layout queda igual que si su contenido fuera hijo directo de #app */
+#navbar-root,
+#cart-root {
+    display: contents;
+}
+
 a {
     color: inherit;
     text-decoration: none;
