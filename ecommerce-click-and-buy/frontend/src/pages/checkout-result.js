@@ -54,9 +54,6 @@ export async function renderCheckoutResult(container) {
 
     if (isPaid) {
         clearCart({ silent: true });
-        // clearCart re-renderiza la app completa y reemplaza el <main>,
-        // así que hay que volver a buscarlo para dibujar el resultado
-        container = document.querySelector("main");
     }
 
     container.innerHTML = `

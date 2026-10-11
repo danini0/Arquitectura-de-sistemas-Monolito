@@ -69,18 +69,36 @@ export function renderNavbar() {
     </header>`;
 }
 
-export function initNavbar() {
+function updateHeaderScrolled() {
     const header = document.getElementById("main-header");
+    if (!header) return;
+    if (window.scrollY > 20) {
+        header.classList.add("scrolled");
+    } else {
+        header.classList.remove("scrolled");
+    }
+}
 
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > 20) {
-            header.classList.add("scrolled");
+function updateActiveNav() {
+    const path = (window.location.hash.slice(1) || "/").split("?")[0];
+    document.querySelectorAll(".nav-link").forEach((link) => {
+        if (link.dataset.link === path) {
+            link.classList.add("active");
         } else {
-            header.classList.remove("scrolled");
+            link.classList.remove("active");
         }
     });
+}
 
-    document.querySelectorAll("[data-link]").forEach((link) => {
+// Listeners sobre window: se registran una sola vez en init(), no en cada refreshApp()
+export function bindNavbarGlobalListeners() {
+    window.addEventListener("scroll", updateHeaderScrolled);
+    window.addEventListener("hashchange", updateActiveNav);
+}
+
+// Listeners de los elementos del navbar: se vuelven a asignar cada vez que se re-renderiza
+export function initNavbar(root) {
+    root.querySelectorAll("[data-link]").forEach((link) => {
         link.addEventListener("click", (e) => {
             e.preventDefault();
             navigate(link.dataset.link);
@@ -98,17 +116,6 @@ export function initNavbar() {
         });
     }
 
-    const updateActiveNav = () => {
-        const path = (window.location.hash.slice(1) || "/").split("?")[0];
-        document.querySelectorAll(".nav-link").forEach((link) => {
-            if (link.dataset.link === path) {
-                link.classList.add("active");
-            } else {
-                link.classList.remove("active");
-            }
-        });
-    };
-
-    window.addEventListener("hashchange", updateActiveNav);
+    updateHeaderScrolled();
     updateActiveNav();
 }
