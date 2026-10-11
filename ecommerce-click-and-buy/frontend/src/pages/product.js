@@ -124,7 +124,7 @@ export async function renderProduct(container, params) {
                 });
             });
 
-            document.querySelectorAll("[data-size]").forEach((btn) => {
+            container.querySelectorAll("[data-size]").forEach((btn) => {
                 btn.addEventListener("click", () => {
                     selectedSize = btn.dataset.size;
                     render();
